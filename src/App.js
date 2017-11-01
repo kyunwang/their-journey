@@ -9,26 +9,29 @@ class App extends Component {
 		this.state = {
 			screenWidth: 1000,
 			screenHeight: 1000,
-		}
+		};
+	}
+
+	componentDidMount() {
+		window.addEventListener('resize', this.onResize, false);
+		this.onResize();
 	}
 
 	onResize = () => {
 		this.setState({
 			screenWidth: window.innerWidth,
-			screenHeight: window.innerHeight - 120
+			screenHeight: window.innerHeight,
 		});
 	}
 
-	componentDidMount() {
-		window.addEventListener('resize', this.onResize, false)
-		this.onResize()
-	}
 
 	render() {
 		const {
 			screenHeight,
 			screenWidth,
 		} = this.state;
+
+		// console.log('state', this.state);
 
 		return (
 			<div className="App">

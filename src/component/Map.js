@@ -1,8 +1,8 @@
 // From https://medium.com/@zimrick/how-to-create-pure-react-svg-maps-with-topojson-and-d3-geo-e4a6b6848a98
 
-import React, { Component } from "react"
-import { geoMercator, geoPath } from "d3-geo"
-import { feature } from "topojson-client"
+import React, { Component } from 'react';
+import { geoMercator, geoPath } from 'd3-geo';
+import { feature } from 'topojson-client';
 import PropTypes from 'prop-types';
 
 class WorldMap extends Component {
@@ -17,48 +17,58 @@ class WorldMap extends Component {
 	}
 
 	constructor() {
-		super()
+		super();
 		this.state = {
 			worldData: [],
-		}
-	}
-
-	projection() {
-		return geoMercator()
-			.scale(200)
-			.translate([this.props.svgWidth / 2, this.props.svgHeight / 2])
+		};
 	}
 
 	componentDidMount() {
 		// fetch("/europe.json") // objects.europe
 		// fetch("/world-110m.json")
-		fetch("/ne_10m_admin_0_countries.json")
+		fetch('/ne_10m_admin_0_countries.json')
 			.then(response => {
 				if (response.status !== 200) {
-					console.log(`There was a problem: ${response.status}`)
-					return
+					console.log(`There was a problem: ${response.status}`);
+					return;
 				}
 
 				response.json().then(worldData => {
+					console.log(worldData);
 					this.setState({
 						worldData: feature(worldData, worldData.objects.countries).features,
-					})
-				})
-			})
+					});
+				});
+			});
 	}
+
+
+	projection() {
+		const lo = 26.2206322; // x
+		const la = 46.0485818; // y
+		return geoMercator()
+			.center([0, la])
+			.rotate([-lo, 0])
+			.scale(this.props.svgWidth * 0.55)
+			// .scale(this.props.svgHeight / 2)
+			.translate([this.props.svgWidth / 2, this.props.svgHeight / 2]);
+	}
+
 	render() {
 		const {
+			svgHeight,
 			svgWidth,
-			svgHeight
 		} = this.props;
+
+		// console.log('props', this.props);
 
 
 		return (
 			// <svg width={svgWidth} height={svgHeight} viewBox={`0 0 800 450`}>
 			// <svg width={1000} height={800}>
 			<svg
-				width={svgWidth}
 				height={svgHeight}
+				width={svgWidth}
 				viewBox={`0 0 ${svgWidth} ${svgHeight}`}
 			>
 
@@ -77,6 +87,7 @@ class WorldMap extends Component {
 					}
 				</g>
 
+				{/*
 				<g className="markers">
 					<circle
 						cx={this.projection()([8, 48])[0]}
@@ -85,10 +96,10 @@ class WorldMap extends Component {
 						fill="#E91E63"
 						className="marker"
 					/>
-				</g>
+				</g> */}
 			</svg>
-		)
+		);
 	}
 }
 
-export default WorldMap
+export default WorldMap;
