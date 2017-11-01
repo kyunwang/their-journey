@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import Map from './component/Map';
+import WorldMap from './component/WorldMap';
 
 class App extends Component {
 	constructor() {
@@ -35,7 +35,7 @@ class App extends Component {
 
 		return (
 			<div className="App">
-				<Map
+				<WorldMap
 					svgHeight={screenHeight}
 					svgWidth={screenWidth}
 				/>
