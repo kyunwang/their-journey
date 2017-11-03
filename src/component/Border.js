@@ -25,7 +25,7 @@ class Border extends Component {
 							{ /* console.log(d); */ }
 							return (<path
 								// onMouseEnter={() => { console.log('enterrerd'); }}
-								key={d.properties.BRK_NAME}
+								key={d.properties.ADMIN}
 								d={geoPath().projection(this.props.projection())(d)}
 								className="country"
 								fill={'#a3a3a3'}

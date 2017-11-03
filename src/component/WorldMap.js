@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import {
 	geoMercator,
 	geoPath,
+	geoCentroid,
 } from 'd3-geo';
 import {
 	json as d3Json,
@@ -33,24 +34,33 @@ class WorldMap extends Component {
 		super();
 		this.state = {
 			worldData: null,
+			refugeeData: null,
+			directionMapping: null,
 		};
 	}
 
-	componentDidMount() {
-		d3Json('/ne_50m_admin_0_countries_lakes.json', this.loadMap);
-		d3Text('/to_germany_2014.csv', this.loadRefugee);
+	async componentDidMount() {
+		await d3Json('/ne_50m_admin_0_countries_lakes.json', this.loadMap);
+		await d3Text('/to_germany_2014.csv', this.loadRefugee);
 	}
 
 	loadMap = (err, res) => {
 		this.setState({
 			worldData: feature(res, res.objects.countries).features,
+		}, () => {
+			this.state.worldData.map(item => {
+				this.setState(prevState => ({
+					directionMapping: {
+						...prevState.directionMapping,
+						[item.properties.ADMIN]: geoCentroid(item),
+					},
+				}));
+			});
 		});
 	}
 
 	loadRefugee = (err, res) => {
-		this.setState({
-			refugeeData: cleanRefugee(res),
-		});
+		this.setState({ refugeeData: cleanRefugee(res) });
 	}
 
 	projection = () => {
@@ -66,14 +76,8 @@ class WorldMap extends Component {
 
 	render() {
 		const {
-			svgHeight,
-			svgWidth,
-		} = this.props;
-
-		const {
 			worldData,
 		} = this.state;
-
 
 		// Can set a loader here
 		if (!worldData) {
