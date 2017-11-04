@@ -17,7 +17,7 @@ function cleanRefugee(res) {
 			return;
 		}
 		return {
-			[keys[0]]: d[0],
+			Destination: d[0],
 			[keys[1]]: d[1],
 			[keys[2]]: d[2],
 			[keys[3]]: d[3],
