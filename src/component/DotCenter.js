@@ -1,41 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as d3 from 'd3';
-import {
-	select,
-	selectAll,
-} from 'd3-selection';
 
-import {
-	geoMercator,
-	geoCentroid,
-} from 'd3-geo';
-
-import ReactDOM from 'react-dom';
 
 class DotCenter extends Component {
 	static propTypes = {
-		svgContainer: PropTypes.object.isRequired,
-		directionMapping: PropTypes.array.isRequired,
 		projection: PropTypes.func.isRequired,
+		coords: PropTypes.array.isRequired,
 	}
 
 
 	componentDidMount() {
-
-	}
-
-	componentDidUpdate() {
-
 	}
 
 	render() {
 		const {
 			projection,
 			coords,
-			directionMapping,
 		} = this.props;
-		console.log(this.props);
+
 		return (
 			// <text></text>
 			// <text
@@ -50,8 +32,8 @@ class DotCenter extends Component {
 				cx={projection()(coords)[0]}
 				cy={projection()(coords)[1]}
 				// r={city.population / 3000000}
-				r={8}
-				fill="#E91E63"
+				r={5}
+				fill="#00CC99"
 				stroke="#FFFFFF"
 				className="marker"
 			// onClick={() => this.handleMarkerClick(i)}

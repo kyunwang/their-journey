@@ -38,17 +38,6 @@ class WorldMap extends Component {
 			refugeeData: null,
 			directionMapping: [],
 		};
-
-		const lo = 26.2206322; // x
-		const la = 46.0485818; // y
-
-		this.geo = geoMercator();
-		this.mapPath = geoPath().projection(this.geo);
-		this.geo
-			.center([0, la])
-			.rotate([-lo, 0])
-			.scale(props.svgWidth * 0.55)
-			.translate([props.svgWidth / 2, props.svgHeight / 2]);
 	}
 
 	async componentDidMount() {
@@ -78,6 +67,7 @@ class WorldMap extends Component {
 		this.setState({ refugeeData: cleanRefugee(res) });
 	}
 
+	// The projection fo the map
 	projection = () => {
 		const lo = 26.2206322; // x
 		const la = 46.0485818; // y
@@ -116,13 +106,8 @@ class WorldMap extends Component {
 				}
 			>
 				<Border
-					{...this.props}
-					svgContainer={this.svgContainer}
 					projection={this.projection}
-					// projection={this.geo}
 					worldData={worldData}
-					mapPath={this.mapPath}
-					directionMapping={directionMapping}
 				/>
 				{
 					directionMapping.map(data => {
