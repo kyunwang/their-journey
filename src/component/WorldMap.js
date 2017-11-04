@@ -42,9 +42,19 @@ class WorldMap extends Component {
 		};
 	}
 
-	async componentDidMount() {
-		await d3Json('/ne_50m_admin_0_countries_lakes.json', this.loadMap);
-		await d3Text('/to_germany_2014.csv', this.loadRefugee);
+	componentDidMount() {
+		d3Json('/ne_50m_admin_0_countries_lakes.json', this.loadMap);
+		d3Text('/to_germany_2014.csv', this.loadRefugee);
+
+		// d3Text('/all_refugees12-17.csv', this.loadRefugee);
+
+		// d3Text('/all_refugees12-17.csv').on('progress', evt => {
+		// 	console.log(`Amount loaded: ${evt.loaded}`);
+		// })
+		// 	.get(data => {
+		// 		console.timeEnd('totalTime:');
+		// 		this.loadRefugee(null, data);
+		// 	});
 	}
 
 	loadMap = (err, res) => {
@@ -70,6 +80,8 @@ class WorldMap extends Component {
 	}
 
 	loadRefugee = (err, res) => {
+		// console.log(err, res);
+		// console.table(res);
 		this.setState({ refugeeData: cleanRefugee(res) });
 	}
 
@@ -119,14 +131,14 @@ class WorldMap extends Component {
 			worldData,
 			directionMapping,
 			countryCenter,
+			refugeeData,
 		} = this.state;
 
-		console.log(this.state.refugeeData);
-		console.log(this.state.directionMapping);
-		console.log('center', this.state.countryCenter);
+		// console.log(this.state.directionMapping);
+		// console.log('center', this.state.countryCenter);
 
-		// Can set a loader here
-		if (!worldData || !countryCenter) {
+		// Show loader if our required data has yet to be loaded
+		if (!worldData || !countryCenter || !directionMapping) {
 			console.log('in', this.state);
 			return (
 				<p>Loading</p>
@@ -147,7 +159,8 @@ class WorldMap extends Component {
 				/>
 
 				{this.renderCenter()}
-				{this.renderTraject()}
+
+				{refugeeData && this.renderTraject()}
 
 			</svg>
 		);
