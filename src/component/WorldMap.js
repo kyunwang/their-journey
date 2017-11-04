@@ -31,13 +31,24 @@ class WorldMap extends Component {
 		svgWidth: 800,
 	}
 
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.state = {
 			worldData: null,
 			refugeeData: null,
 			directionMapping: [],
 		};
+
+		const lo = 26.2206322; // x
+		const la = 46.0485818; // y
+
+		this.geo = geoMercator();
+		this.mapPath = geoPath().projection(this.geo);
+		this.geo
+			.center([0, la])
+			.rotate([-lo, 0])
+			.scale(props.svgWidth * 0.55)
+			.translate([props.svgWidth / 2, props.svgHeight / 2]);
 	}
 
 	async componentDidMount() {
@@ -97,10 +108,8 @@ class WorldMap extends Component {
 		}
 
 		return (
-			// <div>
 			<svg
 				ref={el => (this.svgContainer = el)}
-				// ref="test"
 				height={svgHeight}
 				width={svgWidth}
 				viewBox={`0 0 ${svgWidth - 200} ${svgHeight + 400}`
@@ -108,16 +117,29 @@ class WorldMap extends Component {
 			>
 				<Border
 					{...this.props}
-					projection={this.projection}
-					worldData={worldData}
-				/>
-				<DotCenter
-					{...this.props}
-					directionMapping={directionMapping}
 					svgContainer={this.svgContainer}
+					projection={this.projection}
+					// projection={this.geo}
+					worldData={worldData}
+					mapPath={this.mapPath}
+					directionMapping={directionMapping}
 				/>
+				{
+					directionMapping.map(data => {
+						{ /* console.log(data); */ }
+						return (
+							<DotCenter
+								key={data.name}
+								directionMapping={directionMapping}
+								projection={this.projection}
+								coords={data.coords}
+								name={data.name}
+							/>
+
+						);
+					})
+				}
 			</svg>
-			// {/* </div> */ }
 		);
 	}
 }

@@ -2,8 +2,19 @@
 	text-align: center;
 	/* margin: 1.5em; */
 	margin: var(--def-margin);
+	border: 1px solid #000;
 	overflow: hidden;
 }
+
+.country {
+	fill: #fff;
+	stroke: #007fff;
+	stroke-width: 1.5;
+}
+
+
+
+
 
 
 

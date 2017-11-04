@@ -20,7 +20,7 @@ class App extends Component {
 	onResize = () => {
 		this.setState({
 			screenWidth: window.innerWidth,
-			screenHeight: window.innerHeight,
+			screenHeight: window.innerHeight - 120,
 		});
 	}
 
