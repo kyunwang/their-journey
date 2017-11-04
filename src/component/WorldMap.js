@@ -16,6 +16,7 @@ import { feature } from 'topojson-client';
 import PropTypes from 'prop-types';
 
 import Border from './Border';
+import DotCenter from './DotCenter';
 
 import { cleanRefugee } from '../cleanData';
 
@@ -35,7 +36,7 @@ class WorldMap extends Component {
 		this.state = {
 			worldData: null,
 			refugeeData: null,
-			directionMapping: null,
+			directionMapping: [],
 		};
 	}
 
@@ -50,10 +51,13 @@ class WorldMap extends Component {
 		}, () => {
 			this.state.worldData.map(item => {
 				this.setState(prevState => ({
-					directionMapping: {
+					directionMapping: [
 						...prevState.directionMapping,
-						[item.properties.ADMIN]: geoCentroid(item),
-					},
+						{
+							name: item.properties.ADMIN,
+							coords: geoCentroid(item),
+						},
+					],
 				}));
 			});
 		});
@@ -76,7 +80,13 @@ class WorldMap extends Component {
 
 	render() {
 		const {
+			svgHeight,
+			svgWidth,
+		} = this.props;
+
+		const {
 			worldData,
+			directionMapping,
 		} = this.state;
 
 		// Can set a loader here
@@ -87,13 +97,27 @@ class WorldMap extends Component {
 		}
 
 		return (
-			<div>
+			// <div>
+			<svg
+				ref={el => (this.svgContainer = el)}
+				// ref="test"
+				height={svgHeight}
+				width={svgWidth}
+				viewBox={`0 0 ${svgWidth - 200} ${svgHeight + 400}`
+				}
+			>
 				<Border
 					{...this.props}
 					projection={this.projection}
 					worldData={worldData}
 				/>
-			</div>
+				<DotCenter
+					{...this.props}
+					directionMapping={directionMapping}
+					svgContainer={this.svgContainer}
+				/>
+			</svg>
+			// {/* </div> */ }
 		);
 	}
 }
