@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 
 import Border from './Border';
 import DotCenter from './DotCenter';
+import Trajectory from './Trajectory';
 
 import { cleanRefugee } from '../cleanData';
 
@@ -37,6 +38,7 @@ class WorldMap extends Component {
 			worldData: null,
 			refugeeData: null,
 			directionMapping: [],
+			countryCenter: null,
 		};
 	}
 
@@ -58,6 +60,10 @@ class WorldMap extends Component {
 							coords: geoCentroid(item),
 						},
 					],
+					countryCenter: {
+						...prevState.countryCenter,
+						[item.properties.ADMIN]: geoCentroid(item),
+					},
 				}));
 			});
 		});
@@ -79,6 +85,30 @@ class WorldMap extends Component {
 			.translate([this.props.svgWidth / 2, this.props.svgHeight / 2]);
 	}
 
+	renderCenter = () => (
+		this.state.directionMapping.map(data => {
+			{ /* console.log(data); */ }
+			return (
+				<DotCenter
+					key={data.name}
+					directionMapping={this.state.directionMapping}
+					projection={this.projection}
+					coords={data.coords}
+					name={data.name}
+				/>
+
+			);
+		})
+	);
+
+	renderTraject = () => (
+		<Trajectory
+			refugees={this.state.refugeeData}
+			countryCenter={this.state.countryCenter}
+			projection={this.projection}
+		/>
+	)
+
 	render() {
 		const {
 			svgHeight,
@@ -88,10 +118,16 @@ class WorldMap extends Component {
 		const {
 			worldData,
 			directionMapping,
+			countryCenter,
 		} = this.state;
 
+		console.log(this.state.refugeeData);
+		console.log(this.state.directionMapping);
+		console.log('center', this.state.countryCenter);
+
 		// Can set a loader here
-		if (!worldData) {
+		if (!worldData || !countryCenter) {
+			console.log('in', this.state);
 			return (
 				<p>Loading</p>
 			);
@@ -109,21 +145,10 @@ class WorldMap extends Component {
 					projection={this.projection}
 					worldData={worldData}
 				/>
-				{
-					directionMapping.map(data => {
-						{ /* console.log(data); */ }
-						return (
-							<DotCenter
-								key={data.name}
-								directionMapping={directionMapping}
-								projection={this.projection}
-								coords={data.coords}
-								name={data.name}
-							/>
 
-						);
-					})
-				}
+				{this.renderCenter()}
+				{this.renderTraject()}
+
 			</svg>
 		);
 	}
