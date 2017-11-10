@@ -1,21 +1,47 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
+import WorldMap from './component/WorldMap';
+
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
+	constructor() {
+		super();
+		this.state = {
+			screenWidth: 1000,
+			screenHeight: 1000,
+		};
+	}
+
+	componentDidMount() {
+		window.addEventListener('resize', this.onResize, false);
+		this.onResize();
+	}
+
+	onResize = () => {
+		this.setState({
+			screenWidth: window.innerWidth,
+			screenHeight: window.innerHeight - 120,
+		});
+	}
+
+
+	render() {
+		const {
+			screenHeight,
+			screenWidth,
+		} = this.state;
+
+		// console.log('state', this.state);
+
+		return (
+			<div className="App">
+				<WorldMap
+					svgHeight={screenHeight}
+					svgWidth={screenWidth}
+				/>
+			</div>
+		);
+	}
 }
 
 export default App;
